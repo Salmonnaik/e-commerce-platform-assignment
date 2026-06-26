@@ -1,0 +1,12 @@
+stateDiagram-v2
+    [*] --> PENDING
+    PENDING --> PAID: payment success
+    PAID --> SHIPMENT_CREATED: shipment booked
+    SHIPMENT_CREATED --> PICKED_UP: provider update
+    PICKED_UP --> IN_TRANSIT: provider update
+    IN_TRANSIT --> OUT_FOR_DELIVERY: provider update
+    OUT_FOR_DELIVERY --> DELIVERED: provider update
+    DELIVERED --> COMPLETED: close order
+    SHIPMENT_CREATED --> FAILED: booking failed
+    FAILED --> RETURNED: return initiated
+    RETURNED --> REFUNDED: refund processed

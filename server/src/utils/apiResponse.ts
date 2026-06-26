@@ -1,0 +1,12 @@
+export const successResponse = (data: any, message: string = 'Success') => ({
+  success: true,
+  message,
+  data,
+});
+
+export const errorResponse = (message: string, statusCode: number = 500, errors?: any) => ({
+  success: false,
+  message,
+  statusCode,
+  errors,
+});

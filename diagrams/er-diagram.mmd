@@ -1,0 +1,141 @@
+erDiagram
+    User ||--o{ Order : places
+    User ||--o{ CartItem : has
+    User ||--o{ ShippingAddress : uses
+    User ||--|| Seller : owns
+    User ||--o{ Notification : receives
+    
+    Category ||--o{ Product : contains
+    
+    Product ||--|| Inventory : has
+    Product ||--o{ CartItem : in
+    Product ||--o{ OrderItem : in
+    Product }o--|| Seller : sold_by
+    
+    Order ||--|| Payment : has
+    Order ||--o{ OrderItem : contains
+    Order ||--|| ShippingAddress : ships_to
+    Order ||--|| Shipment : has
+    
+    Payment ||--o{ PaymentLog : generates
+    
+    Seller ||--|| SellerBalance : has
+    Seller ||--o{ SellerLedger : records
+    Seller ||--o{ Payout : receives
+    Seller ||--o{ Escrow : holds
+    
+    Shipment ||--o{ TrackingHistory : has
+    
+    Payout ||--o{ PayoutLog : generates
+    
+    User {
+        uuid id PK
+        string email UK
+        string password
+        string name
+        string role
+        string phone
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    Category {
+        uuid id PK
+        string name UK
+        string slug UK
+        string description
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    Product {
+        uuid id PK
+        string name
+        string slug UK
+        string description
+        decimal price
+        uuid categoryId FK
+        uuid sellerId FK
+        int stock
+        string[] images
+        boolean isActive
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    Order {
+        uuid id PK
+        uuid userId FK
+        string orderNumber UK
+        string status
+        decimal subtotal
+        decimal tax
+        decimal shipping
+        decimal discount
+        decimal total
+        string currency
+        string notes
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    Payment {
+        uuid id PK
+        uuid orderId UK FK
+        string paymentIntentId UK
+        decimal amount
+        string currency
+        string status
+        string clientSecret
+        json metadata
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    Seller {
+        uuid id PK
+        uuid userId UK FK
+        string businessName
+        string businessEmail
+        string businessPhone
+        string taxId
+        string bankAccount
+        string bankName
+        boolean isVerified
+        boolean isActive
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    SellerBalance {
+        uuid id PK
+        uuid sellerId UK FK
+        decimal pending
+        decimal available
+        decimal locked
+        decimal paid
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    Shipment {
+        uuid id PK
+        uuid orderId UK FK
+        string trackingNumber UK
+        string awb
+        string shipmentId
+        string pickupId
+        string courierName
+        string shippingLabelUrl
+        datetime estimatedDelivery
+        string status
+        decimal weight
+        decimal length
+        decimal width
+        decimal height
+        decimal shippingCost
+        string warehousePincode
+        string destinationPincode
+        datetime createdAt
+        datetime updatedAt
+    }

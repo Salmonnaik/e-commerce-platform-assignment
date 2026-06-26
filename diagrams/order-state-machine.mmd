@@ -1,0 +1,41 @@
+stateDiagram-v2
+    [*] --> PENDING: Customer places order
+
+    PENDING --> PAID: Payment successful
+    PENDING --> FAILED: Payment failed
+    PENDING --> CANCELLED: Customer cancels
+
+    PAID --> PROCESSING: Inventory reserved
+    PAID --> CANCELLED: Customer cancels
+    PAID --> REFUNDED: Refund processed
+
+    PROCESSING --> SHIPPED: Shipment created
+    PROCESSING --> CANCELLED: Customer cancels
+
+    SHIPPED --> OUT_FOR_DELIVERY: In transit
+    SHIPPED --> DELIVERED: Direct delivery
+    SHIPPED --> FAILED: Delivery failed
+    SHIPPED --> RETURNED: Return initiated
+
+    OUT_FOR_DELIVERY --> DELIVERED: Package delivered
+    OUT_FOR_DELIVERY --> FAILED: Delivery failed
+    OUT_FOR_DELIVERY --> RETURNED: Return initiated
+
+    DELIVERED --> [*]: Order complete
+    DELIVERED --> RETURNED: Return initiated
+
+    CANCELLED --> [*]: Order cancelled
+    FAILED --> [*]: Order failed
+    REFUNDED --> [*]: Refund complete
+    RETURNED --> [*]: Return complete
+
+    note right of PENDING: Order created, awaiting payment
+    note right of PAID: Payment confirmed, processing
+    note right of PROCESSING: Inventory reserved, preparing shipment
+    note right of SHIPPED: Package shipped
+    note right of OUT_FOR_DELIVERY: Package with courier
+    note right of DELIVERED: Customer received package
+    note right of CANCELLED: Order cancelled by customer
+    note right of FAILED: Payment or delivery failed
+    note right of REFUNDED: Payment refunded
+    note right of RETURNED: Product returned

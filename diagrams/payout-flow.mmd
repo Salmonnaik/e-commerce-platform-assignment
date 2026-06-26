@@ -1,0 +1,37 @@
+sequenceDiagram
+    participant Order
+    participant PaymentService
+    participant SellerService
+    participant Database
+    participant CronJob
+    participant BankAPI
+
+    Order->>PaymentService: Payment Succeeded
+    PaymentService->>SellerService: Process Earnings
+    SellerService->>SellerService: Calculate Split
+    Note over SellerService: Platform: 12%<br/>Gateway: 2.5%<br/>Logistics: $5<br/>Tax: 2%<br/>Reserve: 1%
+    SellerService->>Database: Add to Pending Balance
+    SellerService->>Database: Create Ledger Entry
+    SellerService->>Database: Create Escrow Record
+    
+    Note over CronJob: Every Minute
+    CronJob->>Database: Check Pending Escrows
+    Database-->>CronJob: Ready for Release
+    CronJob->>Database: Move to Available Balance
+    CronJob->>Database: Update Ledger
+    
+    Seller->>Database: Request Payout
+    Database->>SellerService: Execute Payout
+    SellerService->>Database: Lock Balance
+    SellerService->>BankAPI: Transfer Funds
+    alt Success
+        BankAPI-->>SellerService: Success
+        SellerService->>Database: Mark as Completed
+        SellerService->>Database: Update Paid Balance
+        SellerService->>Database: Create Ledger Entry
+    else Failure
+        BankAPI-->>SellerService: Error
+        SellerService->>Database: Mark as Failed
+        SellerService->>Database: Unlock Balance
+        SellerService->>Database: Schedule Retry
+    end

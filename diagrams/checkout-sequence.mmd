@@ -1,0 +1,75 @@
+sequenceDiagram
+    participant Customer
+    participant Frontend
+    participant API as Backend API
+    participant Stripe as Stripe Service
+    participant DB as Database
+    participant Seller as Seller System
+    participant Logistics as Shiprocket
+
+    Customer->>Frontend: Add items to cart
+    Frontend->>Frontend: Update cart state
+
+    Customer->>Frontend: Proceed to checkout
+    Frontend->>API: POST /api/v1/payments/checkout
+    Note over API: Create PaymentIntent and return clientSecret
+
+    API->>DB: Validate products & inventory
+    DB-->>API: Product data available
+
+    API->>Stripe: Create PaymentIntent
+    Stripe-->>API: clientSecret & paymentIntentId
+
+    API->>DB: Create Order (PENDING)
+    API->>DB: Create Payment (PENDING)
+    DB-->>API: Order created
+
+    API-->>Frontend: clientSecret & order details
+    Frontend->>Stripe: Confirm payment using Stripe Elements
+
+    Stripe-->>Frontend: Payment success
+    Stripe->>API: Webhook: payment_intent.succeeded
+
+    Stripe->>API: Webhook: payment_intent.succeeded
+    Note over API: Handle payment success
+
+    API->>DB: Update Payment (COMPLETED)
+    API->>DB: Update Order (PAID)
+    API->>DB: Update Inventory (decrement stock)
+    DB-->>API: Updates complete
+
+    API->>Seller: Process seller earnings
+    Note over Seller: Calculate commission & earnings
+    Seller->>DB: Create Escrow entry
+    Seller->>DB: Update Seller Balance (pending)
+    DB-->>API: Earnings processed
+
+    API->>Logistics: Book shipment
+    Note over Logistics: Create shipping order
+    Logistics-->>API: Tracking number & shipment details
+
+    API->>DB: Create Shipment record
+    API->>DB: Update Order (PROCESSING)
+    DB-->>API: Shipment created
+
+    API->>Customer: Send order confirmation email
+    API->>Seller: Send new order notification
+
+    Logistics->>API: Tracking updates (webhook)
+    API->>DB: Update Shipment status
+    API->>DB: Update Order status
+    Note over DB: SHIPPED → OUT_FOR_DELIVERY → DELIVERED
+
+    API->>Seller: Release escrow after delivery window
+    Note over Seller: Move funds from pending to available
+    Seller->>DB: Update Escrow (RELEASED)
+    Seller->>DB: Update Seller Balance (available)
+    DB-->>API: Escrow released
+
+    Seller->>API: Request payout
+    API->>Seller: Execute payout
+    Note over Seller: Transfer to bank account
+    Seller->>DB: Update Balance (locked → paid)
+    DB-->>API: Payout complete
+
+    API->>Seller: Send payout notification

@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant Customer
+    participant Frontend
+    participant Backend
+    participant Stripe
+    participant Database
+    participant Shiprocket
+
+    Customer->>Frontend: Initiate Checkout
+    Frontend->>Backend: POST /v1/payments/checkout
+    Backend->>Database: Fetch Products
+    Database-->>Backend: Product Data
+    Backend->>Backend: Calculate Totals
+    Backend->>Stripe: Create Payment Intent
+    Stripe-->>Backend: Client Secret
+    Backend->>Database: Save Order & Payment
+    Backend-->>Frontend: Client Secret
+    Frontend->>Stripe: Complete Payment
+    Stripe-->>Frontend: Payment Success
+    Frontend->>Customer: Show Success
+
+    Stripe->>Backend: Webhook: payment_intent.succeeded
+    Backend->>Database: Update Payment Status
+    Backend->>Database: Update Order Status
+    Backend->>Database: Reduce Inventory
+    Backend->>Shiprocket: Book Shipment
+    Shiprocket-->>Backend: Tracking Number
+    Backend->>Database: Save Shipment Details
+    Backend->>Customer: Send Email Notification
