@@ -2,9 +2,9 @@ interface ProductFilterProps {
   categories: Array<{ id: string; name: string }>;
   selectedCategory: string;
   onCategoryChange: (categoryId: string) => void;
-  minPrice: number;
-  maxPrice: number;
-  onPriceChange: (min: number, max: number) => void;
+  minPrice?: number;
+  maxPrice?: number;
+  onPriceChange: (min?: number, max?: number) => void;
   inStock: boolean;
   onInStockChange: (inStock: boolean) => void;
   sortBy: string;
@@ -49,16 +49,16 @@ export default function ProductFilter({
           <input
             type="number"
             placeholder="Min"
-            value={minPrice || ''}
-            onChange={(e) => onPriceChange(Number(e.target.value), maxPrice)}
+            value={minPrice ?? ''}
+            onChange={(e) => onPriceChange(e.target.value ? Number(e.target.value) : undefined, maxPrice)}
             className="w-full border rounded-md px-3 py-2"
           />
           <span>-</span>
           <input
             type="number"
             placeholder="Max"
-            value={maxPrice || ''}
-            onChange={(e) => onPriceChange(minPrice, Number(e.target.value))}
+            value={maxPrice ?? ''}
+            onChange={(e) => onPriceChange(minPrice, e.target.value ? Number(e.target.value) : undefined)}
             className="w-full border rounded-md px-3 py-2"
           />
         </div>

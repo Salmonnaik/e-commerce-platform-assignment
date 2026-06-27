@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { JWT } from '../constants';
-import prisma from '../config/database';
+import User from '../models/User';
+import { verifyToken } from '../utils/jwt';
 
 export interface AuthRequest extends Request {
   userId?: string;
@@ -21,10 +20,8 @@ export const authenticate = async (
       return;
     }
 
-    const decoded = jwt.verify(token, JWT.SECRET) as { userId: string; role: string };
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-    });
+    const decoded = verifyToken(token);
+    const user = await User.findById(decoded.userId);
 
     if (!user) {
       res.status(401).json({ success: false, message: 'Invalid token' });
@@ -34,7 +31,7 @@ export const authenticate = async (
     req.userId = decoded.userId;
     req.userRole = decoded.role;
     next();
-  } catch (error) {
+  } catch {
     res.status(401).json({ success: false, message: 'Invalid token' });
   }
 };

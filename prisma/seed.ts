@@ -33,6 +33,15 @@ const products = [
   { name: 'Stainless Steel Water Bottle 32oz', description: 'Double-wall insulated bottle keeps drinks cold 24h or hot 12h.', price: 29.99, categorySlug: 'sports-outdoors', sellerEmail: 'seller@homcraft.com', stock: 120, imageSeed: 'water-bottle' },
   { name: 'The Art of Product Design', description: 'Practical guide to building user-centered products.', price: 24.99, categorySlug: 'books-media', sellerEmail: 'seller@techvault.com', stock: 100, imageSeed: 'design-book' },
   { name: 'Enterprise E-Commerce Handbook', description: 'Reference for multi-vendor marketplaces, payments, and logistics.', price: 39.99, categorySlug: 'books-media', sellerEmail: 'seller@techvault.com', stock: 75, imageSeed: 'ecommerce-book' },
+  { name: 'Wireless Earbuds Pro', description: 'True wireless earbuds with active noise cancellation and long battery life.', price: 89.99, categorySlug: 'electronics', sellerEmail: 'seller@techvault.com', stock: 150, imageSeed: 'earbuds' },
+  { name: 'Adjustable Laptop Stand', description: 'Aluminum adjustable laptop stand with improved airflow and ergonomics.', price: 39.99, categorySlug: 'electronics', sellerEmail: 'seller@techvault.com', stock: 64, imageSeed: 'laptop-stand' },
+  { name: 'Fast USB-C Phone Charger 30W', description: 'Compact 30W USB-C PD charger for fast and safe charging.', price: 19.99, categorySlug: 'electronics', sellerEmail: 'seller@techvault.com', stock: 210, imageSeed: 'phone-charger' },
+  { name: 'Ergonomic Office Chair', description: 'Mesh back office chair with lumbar support and adjustable armrests.', price: 199.99, categorySlug: 'home-garden', sellerEmail: 'seller@homcraft.com', stock: 26, imageSeed: 'office-chair' },
+  { name: 'Modern Vegetarian Cookbook', description: 'Fresh vegetarian recipes for easy weeknight meals.', price: 27.99, categorySlug: 'books-media', sellerEmail: 'seller@techvault.com', stock: 140, imageSeed: 'cookbook' },
+  { name: 'Bluetooth Item Tracker (4-pack)', description: 'Small Bluetooth trackers with replaceable batteries for keys and luggage.', price: 34.99, categorySlug: 'electronics', sellerEmail: 'seller@techvault.com', stock: 300, imageSeed: 'tracker' },
+  { name: 'Gaming Mouse Wireless', description: 'High-precision wireless gaming mouse with programmable buttons.', price: 69.99, categorySlug: 'electronics', sellerEmail: 'seller@techvault.com', stock: 85, imageSeed: 'gaming-mouse' },
+  { name: 'Smart LED Bulb (Color)', description: 'Wi-Fi color-changing LED bulb compatible with smart home platforms.', price: 22.99, categorySlug: 'home-garden', sellerEmail: 'seller@homcraft.com', stock: 190, imageSeed: 'smart-bulb' },
+  { name: 'Screen Protector Pack (3)', description: 'Tempered glass screen protectors with anti-scratch coating.', price: 12.99, categorySlug: 'electronics', sellerEmail: 'seller@techvault.com', stock: 420, imageSeed: 'screen-protector' },
 ];
 
 function slugify(text: string): string {

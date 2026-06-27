@@ -1,13 +1,14 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import dotenv from 'dotenv';
 import routes from './routes';
 import { errorHandler } from './middleware/errorHandler';
 import { rateLimiter } from './middleware/rateLimiter';
 import { SERVER } from './constants';
-
-dotenv.config();
 
 const app: Application = express();
 

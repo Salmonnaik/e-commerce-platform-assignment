@@ -16,10 +16,21 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   
-  const [filters, setFilters] = useState({
+  type ProductFilters = {
+    categoryId: string;
+    minPrice?: number;
+    maxPrice?: number;
+    inStock: boolean;
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
+    page: number;
+    limit: number;
+  };
+
+  const [filters, setFilters] = useState<ProductFilters>({
     categoryId: searchParams.get('category') || '',
-    minPrice: Number(searchParams.get('minPrice')) || 0,
-    maxPrice: Number(searchParams.get('maxPrice')) || 0,
+    minPrice: searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : undefined,
+    maxPrice: searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined,
     inStock: searchParams.get('inStock') === 'true',
     sortBy: searchParams.get('sortBy') || 'createdAt',
     sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc',
@@ -90,8 +101,8 @@ export default function Products() {
   const updateSearchParams = (currentFilters: typeof filters) => {
     const params: Record<string, string> = {};
     if (currentFilters.categoryId) params.category = currentFilters.categoryId;
-    if (currentFilters.minPrice) params.minPrice = currentFilters.minPrice.toString();
-    if (currentFilters.maxPrice) params.maxPrice = currentFilters.maxPrice.toString();
+    if (currentFilters.minPrice !== undefined) params.minPrice = currentFilters.minPrice.toString();
+    if (currentFilters.maxPrice !== undefined) params.maxPrice = currentFilters.maxPrice.toString();
     if (currentFilters.inStock) params.inStock = 'true';
     if (currentFilters.sortBy) params.sortBy = currentFilters.sortBy;
     if (currentFilters.sortOrder) params.sortOrder = currentFilters.sortOrder;

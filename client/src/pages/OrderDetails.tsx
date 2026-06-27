@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ordersApi } from '../api/orders';
-import { useAuthStore } from '../store/useAuthStore';
+import { useAuthStore } from '../store/authStore';
 import Loader from '../components/Loader';
 import EmptyState from '../components/EmptyState';
 import Button from '../components/Button';

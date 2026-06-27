@@ -1,82 +1,72 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import prisma from '../config/database';
 import { JWT } from '../constants';
+import User, { type IUser, type UserRole } from '../models/User';
 export { googleAuth } from './googleAuthService';
 
-export const register = async (data: {
+interface RegisterInput {
   email: string;
   password: string;
   name: string;
-  role?: string;
-}) => {
-  const hashedPassword = await bcrypt.hash(data.password, 10);
+  role?: UserRole;
+}
 
-  const user = await prisma.user.create({
-    data: {
-      email: data.email,
-      password: hashedPassword,
-      name: data.name,
-      role: (data.role as 'CUSTOMER' | 'SELLER' | 'ADMIN') || 'CUSTOMER',
-    },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      role: true,
-      createdAt: true,
-    },
+const sanitizeUser = (user: IUser) => ({
+  id: user._id.toString(),
+  email: user.email,
+  name: user.name,
+  role: user.role,
+  avatar: user.avatar,
+  phone: user.phone,
+  status: user.status,
+  createdAt: user.createdAt,
+  updatedAt: user.updatedAt,
+});
+
+const signToken = (user: IUser) =>
+  (jwt.sign as any)({ userId: user._id.toString(), role: user.role }, JWT.SECRET, {
+    expiresIn: String(JWT.EXPIRES_IN),
   });
 
-  const token = jwt.sign(
-    { userId: user.id, role: user.role },
-    JWT.SECRET,
-    { expiresIn: JWT.EXPIRES_IN as any }
-  );
+export const register = async (data: RegisterInput) => {
+  const existingUser = await User.findOne({ email: data.email.toLowerCase() }).lean();
+  if (existingUser) {
+    throw new Error('User already exists');
+  }
 
-  return { user, token };
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+  const user = await User.create({
+    email: data.email.toLowerCase(),
+    password: hashedPassword,
+    name: data.name,
+    role: data.role || 'CUSTOMER',
+    status: 'ACTIVE',
+  });
+
+  const token = signToken(user);
+  return { user: sanitizeUser(user), token };
 };
 
 export const login = async (email: string, password: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
-
+  const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
   if (!user) {
     throw new Error('Invalid credentials');
   }
 
   const isValidPassword = await bcrypt.compare(password, user.password);
-
   if (!isValidPassword) {
     throw new Error('Invalid credentials');
   }
 
-  const token = jwt.sign(
-    { userId: user.id, role: user.role },
-    JWT.SECRET,
-    { expiresIn: JWT.EXPIRES_IN as any }
-  );
-
-  const { password: _, ...userWithoutPassword } = user;
-
-  return { user: userWithoutPassword, token };
+  const token = signToken(user);
+  return { user: sanitizeUser(user), token };
 };
 
 export const getProfile = async (userId: string) => {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      role: true,
-      phone: true,
-      createdAt: true,
-    },
-  });
-
+  const user = await User.findById(userId);
   if (!user) {
     throw new Error('User not found');
   }
 
-  return user;
+  return sanitizeUser(user);
 };

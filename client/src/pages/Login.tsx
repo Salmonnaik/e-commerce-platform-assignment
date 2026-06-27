@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { authApi } from '../api/auth';
+import { ROUTES } from '../constants/routes';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -15,9 +16,17 @@ export default function Login() {
     setError('');
     try {
       const response = await authApi.login({ email, password });
-      setAuth(response.data.user, response.data.token);
-      localStorage.setItem('token', response.data.token);
-      navigate('/');
+      const user = response.data?.data?.user;
+      const token = response.data?.data?.token;
+      if (!user || !token) throw new Error('Invalid login response');
+      setAuth(user, token);
+      if (user.role === 'SELLER') {
+        navigate(ROUTES.seller.dashboard, { replace: true });
+      } else if (user.role === 'ADMIN') {
+        navigate(ROUTES.admin.dashboard, { replace: true });
+      } else {
+        navigate(ROUTES.customer.dashboard, { replace: true });
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
     }

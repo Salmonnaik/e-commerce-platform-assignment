@@ -14,7 +14,9 @@ import EmptyState from '../components/EmptyState';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+  ? loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+  : Promise.resolve(null as any);
 
 function CheckoutForm() {
   const navigate = useNavigate();

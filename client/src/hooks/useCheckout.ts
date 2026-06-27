@@ -7,7 +7,9 @@ import { checkoutSchema } from '../validation/checkoutSchema';
 import { getErrorMessage } from '../utils/helpers';
 import type { CheckoutFormData } from '../validation/checkoutSchema';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+  ? loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+  : Promise.resolve(null as any);
 
 export function useCheckout() {
   const navigate = useNavigate();

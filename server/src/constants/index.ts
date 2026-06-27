@@ -27,7 +27,7 @@ export const SHIPROCKET = {
 };
 
 export const JWT = {
-  SECRET: process.env.JWT_SECRET || '',
+  SECRET: process.env.JWT_SECRET || 'development-secret',
   EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
   REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN || '30d',
 };

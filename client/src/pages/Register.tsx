@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { authApi } from '../api/auth';
+import { ROUTES } from '../constants/routes';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -23,9 +24,11 @@ export default function Register() {
 
     try {
       const response = await authApi.register({ name, email, password });
-      setAuth(response.data.user, response.data.token);
-      localStorage.setItem('token', response.data.token);
-      navigate('/');
+      const user = response.data?.data?.user;
+      const token = response.data?.data?.token;
+      if (!user || !token) throw new Error('Invalid registration response');
+      setAuth(user, token);
+      navigate(ROUTES.customer.dashboard, { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed');
     }

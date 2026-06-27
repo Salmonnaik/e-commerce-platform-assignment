@@ -12,9 +12,16 @@ export const ROUTES = {
   profile: '/profile',
   settings: '/settings',
   tracking: (trackingNumber: string) => `/tracking/${trackingNumber}`,
+  wishlist: '/wishlist',
+  payments: '/payments',
+  customer: {
+    dashboard: '/customer',
+  },
   seller: {
     dashboard: '/seller',
     analytics: '/seller/analytics',
+    products: '/seller/products',
+    addProduct: '/seller/products/new',
   },
   admin: {
     dashboard: '/admin',
@@ -35,4 +42,9 @@ export const PROTECTED_ROUTES = [
   ROUTES.orders,
   ROUTES.profile,
   ROUTES.settings,
+  ROUTES.wishlist,
+  ROUTES.payments,
+  ROUTES.customer.dashboard,
+  ROUTES.seller.dashboard,
+  ROUTES.admin.dashboard,
 ] as const;

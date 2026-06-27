@@ -27,6 +27,7 @@ export default function ProductCard({
   const id = product?.id ?? idProp ?? '';
   const name = product?.name ?? nameProp ?? '';
   const price = product?.price ?? priceProp ?? 0;
+  const priceNumber = typeof price === 'string' ? parseFloat(price) : price;
   const image = product?.images?.[0] ?? imageProp;
   const category = product?.category?.name ?? categoryProp;
   const seller = product?.seller?.businessName ?? sellerProp;
@@ -67,7 +68,7 @@ export default function ProductCard({
         )}
         <div className="flex justify-between items-center">
           <span className="text-xl font-bold text-primary-600">
-            ${price.toFixed(2)}
+            ${priceNumber.toFixed(2)}
           </span>
           {onAddToCart && (
             <button

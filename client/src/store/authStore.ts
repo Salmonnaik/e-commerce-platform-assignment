@@ -13,9 +13,9 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: null,
-  isAuthenticated: false,
+  user: getStorageItem<User | null>(STORAGE_KEYS.user, null),
+  token: getStorageString(STORAGE_KEYS.token),
+  isAuthenticated: Boolean(getStorageString(STORAGE_KEYS.token) && getStorageItem<User | null>(STORAGE_KEYS.user, null)),
 
   setAuth: (user, token) => {
     setStorageString(STORAGE_KEYS.token, token);
