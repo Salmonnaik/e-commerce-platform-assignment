@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { productsApi } from '../api/products';
 import { useCartStore } from '../store/useCartStore';
 import Loader from '../components/Loader';
@@ -12,7 +12,8 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
-  const { addItem } = useCartStore();
+  const navigate = useNavigate();
+  const { addItem, updateQuantity, items } = useCartStore();
 
   useEffect(() => {
     if (id) {
@@ -44,8 +45,26 @@ export default function ProductDetails() {
   };
 
   const handleBuyNow = () => {
-    handleAddToCart();
-    window.location.href = '/checkout';
+    if (!product) return;
+
+    const cartItem = {
+      productId: product.id,
+      name: product.name,
+      price: Number(product.price),
+      image: product.images?.[0],
+    };
+
+    const existingItem = items.find((item) => item.productId === product.id);
+    if (existingItem) {
+      updateQuantity(product.id, quantity);
+    } else {
+      addItem(cartItem);
+      if (quantity > 1) {
+        updateQuantity(product.id, quantity);
+      }
+    }
+
+    navigate('/checkout');
   };
 
   if (loading) {

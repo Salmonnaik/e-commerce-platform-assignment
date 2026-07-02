@@ -9,6 +9,8 @@ export const ROUTES = {
   checkout: '/checkout',
   orders: '/orders',
   orderDetail: (id: string) => `/orders/${id}`,
+  // DEMO PAYMENT MODE - Order success page
+  orderSuccess: (id: string) => `/order-success/${id}`,
   profile: '/profile',
   settings: '/settings',
   tracking: (trackingNumber: string) => `/tracking/${trackingNumber}`,

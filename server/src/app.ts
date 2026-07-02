@@ -1,6 +1,27 @@
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
 
-dotenv.config();
+const findEnvFile = (startDir: string, maxDepth = 5) => {
+  let currentDir = path.resolve(startDir);
+  for (let i = 0; i < maxDepth; i += 1) {
+    const envPath = path.join(currentDir, '.env');
+    if (fs.existsSync(envPath)) {
+      return envPath;
+    }
+    const parentDir = path.dirname(currentDir);
+    if (parentDir === currentDir) break;
+    currentDir = parentDir;
+  }
+  return undefined;
+};
+
+const envPath = findEnvFile(process.cwd()) || findEnvFile(__dirname);
+if (envPath) {
+  dotenv.config({ path: envPath });
+} else {
+  dotenv.config();
+}
 
 import express, { Application } from 'express';
 import cors from 'cors';

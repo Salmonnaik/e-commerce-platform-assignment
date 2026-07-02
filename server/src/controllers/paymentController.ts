@@ -1,22 +1,33 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import { createCheckout, handlePaymentSuccess, handlePaymentFailure, refundPayment } from '../services/paymentService';
+// DEMO PAYMENT MODE - Import demo checkout service
+import { createDemoCheckout } from '../services/demoCheckoutService';
 import { constructWebhookEvent } from '../services/stripeService';
 import { saveIdempotencyResponse } from '../middleware/idempotency';
 import { addMinutes } from '../utils/date';
 import { successResponse, errorResponse } from '../utils/apiResponse';
+import { SERVER } from '../constants';
 import prisma from '../config/database';
 
 export const createCheckoutController = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const idempotencyKey = req.headers['idempotency-key'] as string;
 
-    const result = await createCheckout({
-      userId: req.userId!,
-      items: req.body.items,
-      shippingAddress: req.body.shippingAddress,
-      idempotencyKey,
-    });
+    // DEMO PAYMENT MODE - Use demo checkout if enabled
+    const result = SERVER.DEMO_PAYMENT
+      ? await createDemoCheckout({
+          userId: req.userId!,
+          items: req.body.items,
+          shippingAddress: req.body.shippingAddress,
+          idempotencyKey,
+        })
+      : await createCheckout({
+          userId: req.userId!,
+          items: req.body.items,
+          shippingAddress: req.body.shippingAddress,
+          idempotencyKey,
+        });
 
     if (idempotencyKey) {
       await saveIdempotencyResponse(

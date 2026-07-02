@@ -17,6 +17,8 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import OrderDetails from './pages/OrderDetails';
+// DEMO PAYMENT MODE - Import OrderSuccess page
+import OrderSuccess from './pages/OrderSuccess';
 import Categories from './pages/Categories';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
@@ -83,6 +85,8 @@ function App() {
                   <Route path="/categories" element={<Categories />} />
                   <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
                   <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+                  {/* DEMO PAYMENT MODE - Order success page */}
+                  <Route path="/order-success/:orderId" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
                   <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
                   <Route path="/orders/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
                   <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

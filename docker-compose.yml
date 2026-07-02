@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: enterprise-ecommerce-postgres
+    environment:
+      POSTGRES_USER: ecommerce
+      POSTGRES_PASSWORD: ecommerce123
+      POSTGRES_DB: enterprise_ecommerce
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - enterprise-ecommerce
+
+  mongodb:
+    image: mongo:latest
+    container_name: enterprise-ecommerce-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: enterprise-ecommerce
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - enterprise-ecommerce
+
+networks:
+  enterprise-ecommerce:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mongodb_data:

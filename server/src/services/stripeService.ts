@@ -1,4 +1,4 @@
-import Stripe from 'stripe';
+       import Stripe from 'stripe';
 import { STRIPE } from '../constants';
 
 const stripe = new Stripe(STRIPE.SECRET_KEY, {
@@ -6,6 +6,10 @@ const stripe = new Stripe(STRIPE.SECRET_KEY, {
 });
 
 export const createPaymentIntent = async (amount: number, currency: string = 'usd', idempotencyKey?: string) => {
+  if (!STRIPE.SECRET_KEY) {
+    throw new Error('Stripe secret key is not configured. Please set STRIPE_SECRET_KEY in the root .env file.');
+  }
+
   try {
     const paymentIntent = await stripe.paymentIntents.create(
       {
@@ -22,8 +26,10 @@ export const createPaymentIntent = async (amount: number, currency: string = 'us
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
     };
-  } catch (error) {
-    throw new Error('Failed to create payment intent');
+  } catch (error: any) {
+    const message = error?.message || 'Failed to create payment intent';
+    console.error('[Stripe] createPaymentIntent error:', message, error);
+    throw new Error(`Failed to create payment intent: ${message}`);
   }
 };
 

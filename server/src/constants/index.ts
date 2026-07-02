@@ -42,4 +42,6 @@ export const SERVER = {
   PORT: parseInt(process.env.PORT || '5000'),
   NODE_ENV: process.env.NODE_ENV || 'development',
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:5173',
+  // DEMO PAYMENT MODE - Development only
+  DEMO_PAYMENT: process.env.DEMO_PAYMENT === 'true',
 };
